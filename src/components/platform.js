@@ -1,42 +1,33 @@
 import React from 'react';
 import { CheckCircle, Shield, Search, Workflow, LogIn, Image } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import enTranslations from '../translations/en.json';
+import frTranslations from '../translations/fr.json';
 
 export default function Platform() {
+  const { isFrench } = useLanguage();
+  const translations = isFrench ? frTranslations : enTranslations;
+
   const platformSections = [
     {
       icon: <LogIn className="w-6 h-6" />,
-      title: "Welcome & Authentication",
-      description: "Professional login interface with secure access controls and intuitive user experience.",
-      features: [
-        "Clean, professional welcome screen",
-        "Secure authentication system", 
-        "Role-based access control",
-        "User-friendly interface design"
-      ],
+      title: translations.platform.welcome.title,
+      description: translations.platform.welcome.description,
+      features: translations.platform.welcome.features,
       imageName: "welcome-screenshot.jpg"
     },
     {
       icon: <Search className="w-6 h-6" />,
-      title: "Intelligent Search Interface", 
-      description: "Advanced search functionality with AI-powered document discovery across all formats.",
-      features: [
-        "Full-text search across all document types",
-        "Integrated OCR technology", 
-        "Smart bandwidth optimization",
-        "Real-time search results"
-      ],
+      title: translations.platform.search.title,
+      description: translations.platform.search.description,
+      features: translations.platform.search.features,
       imageName: "search-screenshot.jpg"
     },
     {
       icon: <Workflow className="w-6 h-6" />,
-      title: "Dashboard & Management",
-      description: "Comprehensive dashboard for document workflows, progress tracking, and team collaboration.",
-      features: [
-        "Document workflow management",
-        "Real-time progress monitoring",
-        "Team collaboration tools",
-        "Administrative controls"
-      ],
+      title: translations.platform.dashboard.title,
+      description: translations.platform.dashboard.description,
+      features: translations.platform.dashboard.features,
       imageName: "dashboard-screenshot.jpg"
     }
   ];
@@ -67,7 +58,7 @@ export default function Platform() {
             <Image className="w-8 h-8 text-green-600" />
           </div>
           <h4 className="font-semibold text-gray-900 mb-2">{title}</h4>
-          <p className="text-gray-600 text-sm mb-3">Add your screenshot to see it here</p>
+          <p className="text-gray-600 text-sm mb-3">{translations.platform.imagePlaceholder}</p>
           <div className="bg-white/80 rounded-lg px-3 py-2 border border-green-200">
             <code className="text-xs text-green-700 font-mono">{imageName}</code>
           </div>
@@ -81,13 +72,13 @@ export default function Platform() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full text-green-700 text-sm font-medium mb-4">
-            Professional Interface
+            {translations.platform.tagline}
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Platform Experience
+            {translations.platform.title}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Clean, intuitive design built for efficient document management
+            {translations.platform.subtitle}
           </p>
         </div>
 

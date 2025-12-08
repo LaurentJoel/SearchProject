@@ -1,37 +1,43 @@
 import React from 'react';
 import { Search, Zap, Workflow, Shield, FileText, Users } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import enTranslations from '../translations/en.json';
+import frTranslations from '../translations/fr.json';
 
 export default function Features() {
+  const { isFrench } = useLanguage();
+  const translations = isFrench ? frTranslations : enTranslations;
+
   const features = [
     {
       icon: <Search className="w-6 h-6" />,
-      title: "AI-Powered Search",
-      description: "Intelligent full-text search across all document types with integrated OCR technology",
+      title: translations.features.aiSearch,
+      description: translations.features.aiSearchDesc,
     },
     {
       icon: <Zap className="w-6 h-6" />,
-      title: "Bandwidth Optimized",
-      description: "Smart segmentation delivers only relevant pages, reducing data transfer significantly",
+      title: translations.features.bandwidthOptimized,
+      description: translations.features.bandwidthOptimizedDesc,
     },
     {
       icon: <Workflow className="w-6 h-6" />,
-      title: "Workflow Automation",
-      description: "Customizable BPM engine for document validation and approval processes",
+      title: translations.features.workflowAutomation,
+      description: translations.features.workflowAutomationDesc,
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      title: "Enterprise Security",
-      description: "JWT authentication, hierarchical roles, and granular RBAC permissions",
+      title: translations.features.enterpriseSecurity,
+      description: translations.features.enterpriseSecurityDesc,
     },
     {
       icon: <FileText className="w-6 h-6" />,
-      title: "Document Management",
-      description: "Complete document lifecycle management with metadata and version control",
+      title: translations.features.documentManagement,
+      description: translations.features.documentManagementDesc,
     },
     {
       icon: <Users className="w-6 h-6" />,
-      title: "Team Collaboration",
-      description: "Seamless collaboration with comments, digital signatures, and real-time tracking",
+      title: translations.features.teamCollaboration,
+      description: translations.features.teamCollaborationDesc,
     }
   ];
 
@@ -40,10 +46,10 @@ export default function Features() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Enterprise-Grade Features
+            {translations.features.title}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Comprehensive document management solution designed for modern administration needs
+            {translations.features.subtitle}
           </p>
         </div>
 
