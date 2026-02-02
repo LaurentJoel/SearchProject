@@ -1,0 +1,277 @@
+﻿import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
+const Dashboard = () => {
+    const [stats, setStats] = useState({
+        contentSections: 0,
+        features: 0,
+        users: 0,
+        lastUpdated: null
+    });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchData = async () => {
+        setRefreshing(true);
+        try {
+            // Fetch health status
+            const healthRes = await fetch('/api/health');
+            const healthData = await healthRes.json();
+            
+            // Fetch dashboard stats
+            const statsRes = await fetch('/api/stats/dashboard');
+            const statsData = await statsRes.json();
+            
+            setStats({
+                contentSections: healthData.content_sections || 0,
+                features: healthData.features || 0,
+                users: 0,
+                lastUpdated: statsData.last_updated || new Date().toISOString()
+            });
+            setError(null);
+        } catch (err) {
+            setError('Failed to fetch dashboard data: ' + err.message);
+            console.error('Dashboard fetch error:', err);
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
+    };
+
+    // Fetch data on component mount - WITH EMPTY DEPENDENCY ARRAY
+    useEffect(() => {
+        fetchData();
+        
+        // Set up auto-refresh every 30 seconds
+        const interval = setInterval(fetchData, 30000);
+        
+        // Clean up interval on component unmount
+        return () => clearInterval(interval);
+    }, []); // Empty array = run once
+
+    if (loading) {
+        return (
+            <div style={{ padding: '50px', textAlign: 'center' }}>
+                <div style={{ 
+                    border: '4px solid #f3f3f3',
+                    borderTop: '4px solid #3498db',
+                    borderRadius: '50%',
+                    width: '40px',
+                    height: '40px',
+                    animation: 'spin 1s linear infinite',
+                    margin: '0 auto'
+                }}></div>
+                <p style={{ marginTop: '20px' }}>Loading dashboard...</p>
+            </div>
+        );
+    }
+
+    return (
+        <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                <div>
+                    <h1 style={{ margin: '0 0 5px 0' }}>Admin Dashboard</h1>
+                    <p style={{ color: '#666', margin: 0 }}>Overview of your Search Presentation</p>
+                </div>
+                <button
+                    onClick={fetchData}
+                    disabled={refreshing}
+                    style={{
+                        padding: '8px 16px',
+                        background: 'transparent',
+                        border: '1px solid #3498db',
+                        color: '#3498db',
+                        borderRadius: '4px',
+                        cursor: refreshing ? 'not-allowed' : 'pointer',
+                        opacity: refreshing ? 0.7 : 1
+                    }}
+                >
+                    {refreshing ? 'Refreshing...' : 'Refresh Data'}
+                </button>
+            </div>
+
+            {error && (
+                <div style={{
+                    padding: '15px',
+                    background: '#f8d7da',
+                    color: '#721c24',
+                    border: '1px solid #f5c6cb',
+                    borderRadius: '4px',
+                    marginBottom: '20px'
+                }}>
+                    {error}
+                </div>
+            )}
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+                <div style={{
+                    padding: '20px',
+                    background: 'white',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    borderLeft: '4px solid #3498db'
+                }}>
+                    <h3 style={{ margin: '0 0 10px 0', color: '#666' }}>Content Sections</h3>
+                    <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#3498db' }}>
+                        {stats.contentSections}
+                    </div>
+                </div>
+
+                <div style={{
+                    padding: '20px',
+                    background: 'white',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    borderLeft: '4px solid #2ecc71'
+                }}>
+                    <h3 style={{ margin: '0 0 10px 0', color: '#666' }}>Features</h3>
+                    <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#2ecc71' }}>
+                        {stats.features}
+                    </div>
+                </div>
+
+                <div style={{
+                    padding: '20px',
+                    background: 'white',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    borderLeft: '4px solid #9b59b6'
+                }}>
+                    <h3 style={{ margin: '0 0 10px 0', color: '#666' }}>Users</h3>
+                    <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#9b59b6' }}>
+                        {stats.users}
+                    </div>
+                </div>
+
+                <div style={{
+                    padding: '20px',
+                    background: 'white',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    borderLeft: '4px solid #e74c3c'
+                }}>
+                    <h3 style={{ margin: '0 0 10px 0', color: '#666' }}>Last Updated</h3>
+                    <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#e74c3c' }}>
+                        {stats.lastUpdated ? new Date(stats.lastUpdated).toLocaleString() : 'Never'}
+                    </div>
+                </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
+                <div style={{
+                    padding: '20px',
+                    background: 'white',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}>
+                    <h2 style={{ marginTop: 0 }}>System Statistics</h2>
+                    <div style={{ height: '300px', display: 'flex', alignItems: 'flex-end', gap: '20px', padding: '20px 0' }}>
+                        <div style={{ flex: 1, textAlign: 'center' }}>
+                            <div style={{
+                                height: `${Math.min(stats.contentSections * 20, 200)}px`,
+                                background: '#3498db',
+                                borderRadius: '4px 4px 0 0'
+                            }}></div>
+                            <div style={{ marginTop: '10px' }}>Content Sections</div>
+                            <div style={{ fontWeight: 'bold' }}>{stats.contentSections}</div>
+                        </div>
+                        <div style={{ flex: 1, textAlign: 'center' }}>
+                            <div style={{
+                                height: `${Math.min(stats.features * 20, 200)}px`,
+                                background: '#2ecc71',
+                                borderRadius: '4px 4px 0 0'
+                            }}></div>
+                            <div style={{ marginTop: '10px' }}>Features</div>
+                            <div style={{ fontWeight: 'bold' }}>{stats.features}</div>
+                        </div>
+                        <div style={{ flex: 1, textAlign: 'center' }}>
+                            <div style={{
+                                height: `${Math.min(stats.users * 20, 200)}px`,
+                                background: '#9b59b6',
+                                borderRadius: '4px 4px 0 0'
+                            }}></div>
+                            <div style={{ marginTop: '10px' }}>Users</div>
+                            <div style={{ fontWeight: 'bold' }}>{stats.users}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{
+                    padding: '20px',
+                    background: 'white',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}>
+                    <h2 style={{ marginTop: 0 }}>Quick Actions</h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <Link to="/admin/content-editor" style={{
+                            padding: '12px',
+                            background: '#e8f4fc',
+                            border: '1px solid #3498db',
+                            borderRadius: '4px',
+                            color: '#3498db',
+                            textDecoration: 'none',
+                            textAlign: 'left'
+                        }}>
+                            ✏️ Edit Content Sections
+                        </Link>
+                        <Link to="/admin/features-editor" style={{
+                            padding: '12px',
+                            background: '#e8f6ef',
+                            border: '1px solid #2ecc71',
+                            borderRadius: '4px',
+                            color: '#2ecc71',
+                            textDecoration: 'none',
+                            textAlign: 'left'
+                        }}>
+                            ⚙️ Manage Features
+                        </Link>
+                        <Link to="/admin/vision-sections" style={{
+                            padding: '12px',
+                            background: '#f0e8f6',
+                            border: '1px solid #9b59b6',
+                            borderRadius: '4px',
+                            color: '#9b59b6',
+                            textDecoration: 'none',
+                            textAlign: 'left'
+                        }}>
+                            👁️ Vision Sections
+                        </Link>
+                        <Link to="/admin/cta-sections" style={{
+                            padding: '12px',
+                            background: '#fcf0e8',
+                            border: '1px solid #e67e22',
+                            borderRadius: '4px',
+                            color: '#e67e22',
+                            textDecoration: 'none',
+                            textAlign: 'left'
+                        }}>
+                            📢 CTA Sections
+                        </Link>
+                        <Link to="/admin/platform-sections" style={{
+                            padding: '12px',
+                            background: '#f2f2f2',
+                            border: '1px solid #7f8c8d',
+                            borderRadius: '4px',
+                            color: '#7f8c8d',
+                            textDecoration: 'none',
+                            textAlign: 'left'
+                        }}>
+                            🖥️ Platform Sections
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            <style>{`
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `}</style>
+        </div>
+    );
+};
+
+export default Dashboard;

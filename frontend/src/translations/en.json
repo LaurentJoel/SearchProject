@@ -1,0 +1,162 @@
+{
+  "header": {
+    "logoSubtitle": "Document Intelligence Platform",
+    "features": "Features",
+    "platform": "Platform",
+    "demo": "Demo",
+    "vision": "Vision",
+    "presentation": "Presentation"
+  },
+  "hero": {
+    "tagline": "Enterprise Document Intelligence",
+    "titlePart1": "Intelligent Search for",
+    "titlePart2": "Modern",
+    "titlePart3": "Administration",
+    "description": "Advanced document management platform transforming Cameroonian national archives with AI-powered search, automated workflows, and enterprise-grade security.",
+    "aiSearch": "AI-Powered Search",
+    "aiSearchDesc": "Intelligent document discovery",
+    "securePlatform": "Secure Platform",
+    "securePlatformDesc": "Enterprise-grade security",
+    "platformTitle": "SearchEngine Platform",
+    "platformSubtitle": "Professional document management"
+  },
+  "features": {
+    "title": "Enterprise-Grade Features",
+    "subtitle": "Comprehensive document management solution designed for modern administration needs",
+    "aiSearch": "AI-Powered Search",
+    "aiSearchDesc": "Intelligent full-text search across all document types with integrated OCR technology",
+    "bandwidthOptimized": "Bandwidth Optimized",
+    "bandwidthOptimizedDesc": "Smart segmentation delivers only relevant pages, reducing data transfer significantly",
+    "workflowAutomation": "Workflow Automation",
+    "workflowAutomationDesc": "Customizable BPM engine for document validation and approval processes",
+    "enterpriseSecurity": "Enterprise Security",
+    "enterpriseSecurityDesc": "JWT authentication, hierarchical roles, and granular RBAC permissions",
+    "documentManagement": "Document Management",
+    "documentManagementDesc": "Complete document lifecycle management with metadata and version control",
+    "teamCollaboration": "Team Collaboration",
+    "teamCollaborationDesc": "Seamless collaboration with comments, digital signatures, and real-time tracking",
+    "loading": "Loading features..."
+  },
+  "platform": {
+    "tagline": "Professional Interface",
+    "title": "Platform Experience",
+    "subtitle": "Clean, intuitive design built for efficient document management",
+    "loading": "Loading platform...",
+    "welcome": {
+      "title": "Welcome & Authentication",
+      "description": "Professional login interface with secure access controls and intuitive user experience.",
+      "features": [
+        "Clean, professional welcome screen",
+        "Secure authentication system",
+        "Role-based access control",
+        "User-friendly interface design"
+      ]
+    },
+    "search": {
+      "title": "Intelligent Search Interface",
+      "description": "Advanced search functionality with AI-powered document discovery across all formats.",
+      "features": [
+        "Full-text search across all document types",
+        "Integrated OCR technology",
+        "Smart bandwidth optimization",
+        "Real-time search results"
+      ]
+    },
+    "dashboard": {
+      "title": "Dashboard & Management",
+      "description": "Comprehensive dashboard for document workflows, progress tracking, and team collaboration.",
+      "features": [
+        "Document workflow management",
+        "Real-time progress monitoring",
+        "Team collaboration tools",
+        "Administrative controls"
+      ]
+    }
+  },
+  "videoDemo": {
+    "tagline": "Platform Demonstration",
+    "title": "See It In Action",
+    "subtitle": "Watch how SearchEngine transforms document management with intelligent workflows",
+    "noVideoTitle": "Demo Video",
+    "noVideoMessage": "Add your demo video to showcase the platform's features and user experience",
+    "smartSearch": "Smart Search",
+    "smartSearchDesc": "AI-powered document discovery",
+    "workflows": "Workflows",
+    "workflowsDesc": "Automated processes",
+    "security": "Security",
+    "securityDesc": "Enterprise-grade protection",
+    "demoVideo": "Demo Video",
+    "adminUploadVideo": "Upload Video in Admin Panel",
+    "admin": "Admin: Upload demo videos in Content Editor → Video Section"
+  },
+  "future": {
+    "title": "The Future is Bright",
+    "subtitle": "Exciting features coming soon to make SearchEngine even more powerful",
+    "semanticSearch": "AI-Powered Semantic Search",
+    "semanticSearchDesc": "Beyond keyword matching with contextual understanding",
+    "semanticSearchContent": "Our AI learns from document context to provide more accurate search results",
+    "digitalSignatures": "Digital Signatures & Certificates",
+    "digitalSignaturesDesc": "Legal authenticity for digital documents",
+    "digitalSignaturesContent": "Add legally-binding digital signatures and certificates to your documents",
+    "speechRecognition": "Voice Search & Commands",
+    "speechRecognitionDesc": "Hands-free document access and control",
+    "speechRecognitionContent": "Use voice commands to search and navigate through documents",
+    "textToSpeech": "Text-to-Speech Conversion",
+    "textToSpeechDesc": "Listen to documents instead of reading them",
+    "textToSpeechContent": "Convert any document to audio for accessibility and convenience",
+    "annotations": "Real-time Annotations",
+    "annotationsDesc": "Collaborative document markup and comments",
+    "annotationsContent": "Add comments, highlights, and annotations in real-time with team members",
+    "nationalDeployment": "National Deployment",
+    "nationalDeploymentDesc": "Federated network for administrations",
+    "nationalDeploymentContent": "Scale to national level with federated architecture",
+    "innovationTitle": "Continuous Innovation",
+    "innovationMessage": "We're committed to evolving SearchEngine with cutting-edge features that meet the changing needs of modern administrations",
+    "loading": "Loading future vision...",
+    "visionFuture": "Future Vision"
+  },
+  "cta": {
+    "title": "Modernizing Cameroonian Administration",
+    "description": "SearchEngine represents a major contribution to digital transformation, revolutionizing national documentary archive management with cutting-edge technology and innovation.",
+    "secure": "Enterprise Security",
+    "secureDesc": "Military-grade encryption for sensitive documents",
+    "secureContent": "Your data is protected with AES-256 encryption and secure protocols",
+    "fast": "Lightning Fast",
+    "fastDesc": "Optimized search results in milliseconds",
+    "fastContent": "Our optimized algorithms deliver results faster than traditional search",
+    "teams": "Team Collaboration",
+    "teamsDesc": "Seamless workflow across departments",
+    "teamsContent": "Share, comment, and collaborate on documents in real-time",
+    "footerMessage": "Transforming national archive management for Cameroonian administration",
+    "copyright": "© 2025 SearchEngine. All rights reserved"
+  },
+  "languageSwitcher": {
+    "en": "EN",
+    "fr": "FR"
+  },
+  "common": {
+    "loading": "Loading...",
+    "previous": "Previous",
+    "next": "Next",
+    "slide": "Slide",
+    "admin": "Admin",
+    "addContent": "Add content in Admin Panel"
+  },
+  "chatbot": {
+    "title": "SearchEngine Assistant",
+    "welcome": "👋 Hello! I'm the SearchEngine assistant. Ask me questions about our document management platform.",
+    "online": "Online",
+    "minimize": "Minimize",
+    "close": "Close",
+    "typeMessage": "Ask your question...",
+    "send": "Send",
+    "thinking": "Thinking...",
+    "errorConnection": "Unable to connect. Please check your internet connection.",
+    "errorTechnical": "I'm sorry, I'm experiencing technical difficulties. Please try again.",
+    "quickActions": {
+      "features": "Features",
+      "security": "Security",
+      "support": "Support"
+    }
+  }
+}

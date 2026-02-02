@@ -1,0 +1,295 @@
+from flask import Blueprint, request, jsonify, current_app, send_from_directory
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from werkzeug.utils import secure_filename
+import os
+from models import db, ContentSection, User, DynamicSection
+from datetime import datetime
+import traceback
+
+api = Blueprint('api', __name__)
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'mp4', 'webm', 'ogg'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    return response
+
+@api.route('/health', methods=['GET'])
+def health_check():
+    try:
+        sections_count = ContentSection.query.count()
+        db.session.execute(db.text('SELECT 1'))
+        response = jsonify({
+            'status': 'healthy',
+            'database': 'Connected',
+            'content_sections': sections_count,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+        return add_cors_headers(response)
+    except Exception as e:
+        response = jsonify({'status': 'unhealthy', 'error': str(e)})
+        response.status_code = 500
+        return add_cors_headers(response)
+
+@api.route('/content/sections', methods=['GET'])
+def get_sections():
+    try:
+        sections = ContentSection.query.order_by(ContentSection.order).all()
+        response = jsonify([{
+            'id': s.id,
+            'section_type': s.section_type,
+            'title': s.title,
+            'content': s.content,
+            'image_url': s.image_url,
+            'video_url': s.video_url,
+            'order': s.order,
+            'is_active': s.is_active,
+            'updated_at': s.updated_at.isoformat() if s.updated_at else None
+        } for s in sections])
+        return add_cors_headers(response)
+    except Exception as e:
+        current_app.logger.error(f"Error fetching sections: {str(e)}")
+        response = jsonify({'error': str(e)})
+        response.status_code = 500
+        return add_cors_headers(response)
+
+@api.route('/content/sections/<int:section_id>', methods=['PUT'])
+@jwt_required()
+def update_section(section_id):
+    try:
+        section = ContentSection.query.get_or_404(section_id)
+        data = request.get_json()
+        
+        if 'title' in data:
+            section.title = data['title']
+        if 'content' in data:
+            section.content = data['content']
+        if 'image_url' in data:
+            section.image_url = data['image_url']
+        if 'video_url' in data:
+            section.video_url = data['video_url']
+        if 'is_active' in data:
+            section.is_active = data['is_active']
+        if 'order' in data:
+            section.order = data['order']
+        
+        section.updated_at = datetime.utcnow()
+        db.session.commit()
+        
+        response = jsonify({
+            'success': True,
+            'message': 'Section updated successfully',
+            'section': {
+                'id': section.id,
+                'section_type': section.section_type,
+                'title': section.title,
+                'content': section.content,
+                'image_url': section.image_url,
+                'video_url': section.video_url,
+                'order': section.order,
+                'is_active': section.is_active,
+                'updated_at': section.updated_at.isoformat()
+            }
+        })
+        return add_cors_headers(response)
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error updating section: {str(e)}")
+        current_app.logger.error(traceback.format_exc())
+        response = jsonify({'success': False, 'error': str(e)})
+        response.status_code = 500
+        return add_cors_headers(response)
+
+@api.route('/upload', methods=['POST', 'OPTIONS'])
+@jwt_required(optional=True)
+def upload_file():
+    if request.method == 'OPTIONS':
+        response = jsonify({'success': True})
+        return add_cors_headers(response)
+    
+    try:
+        if 'file' not in request.files:
+            response = jsonify({'error': 'No file provided'})
+            response.status_code = 400
+            return add_cors_headers(response)
+        
+        file = request.files['file']
+        if file.filename == '':
+            response = jsonify({'error': 'No file selected'})
+            response.status_code = 400
+            return add_cors_headers(response)
+        
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = f"{timestamp}_{filename}"
+            
+            upload_folder = current_app.config.get('UPLOAD_FOLDER', '/app/uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            filepath = os.path.join(upload_folder, filename)
+            file.save(filepath)
+            
+            file_url = f"/uploads/{filename}"
+            response = jsonify({'success': True, 'url': file_url, 'filename': filename})
+            return add_cors_headers(response)
+        else:
+            response = jsonify({'error': 'File type not allowed'})
+            response.status_code = 400
+            return add_cors_headers(response)
+    except Exception as e:
+        current_app.logger.error(f"Upload error: {str(e)}")
+        response = jsonify({'error': str(e)})
+        response.status_code = 500
+        return add_cors_headers(response)
+
+@api.route('/uploads/<path:filename>', methods=['GET'])
+def serve_upload(filename):
+    upload_folder = current_app.config.get('UPLOAD_FOLDER', '/app/uploads')
+    return send_from_directory(upload_folder, filename)
+
+@api.route('/content/dynamic-sections', methods=['GET'])
+def get_dynamic_sections():
+    try:
+        section_type = request.args.get('section_type')
+        if section_type:
+            sections = DynamicSection.query.filter_by(
+                section_type=section_type, is_active=True
+            ).order_by(DynamicSection.order).all()
+        else:
+            sections = DynamicSection.query.filter_by(
+                is_active=True
+            ).order_by(DynamicSection.order).all()
+        
+        response = jsonify([{
+            'id': s.id,
+            'section_type': s.section_type,
+            'title': s.title,
+            'subtitle': s.subtitle,
+            'content': s.content,
+            'button_text': s.button_text,
+            'button_link': s.button_link,
+            'image_url': s.image_url,
+            'icon': s.icon,
+            'order': s.order,
+            'is_active': s.is_active,
+            'created_at': s.created_at.isoformat() if s.created_at else None,
+            'updated_at': s.updated_at.isoformat() if s.updated_at else None
+        } for s in sections])
+        return add_cors_headers(response)
+    except Exception as e:
+        current_app.logger.error(f"Error fetching dynamic sections: {str(e)}")
+        response = jsonify({'error': str(e)})
+        response.status_code = 500
+        return add_cors_headers(response)
+
+@api.route('/content/dynamic-sections', methods=['POST'])
+@jwt_required()
+def create_dynamic_section():
+    try:
+        data = request.get_json()
+        section = DynamicSection(
+            section_type=data.get('section_type'),
+            title=data.get('title'),
+            subtitle=data.get('subtitle'),
+            content=data.get('content'),
+            button_text=data.get('button_text'),
+            button_link=data.get('button_link'),
+            image_url=data.get('image_url'),
+            icon=data.get('icon'),
+            order=data.get('order', 0),
+            is_active=data.get('is_active', True)
+        )
+        db.session.add(section)
+        db.session.commit()
+        
+        response = jsonify({
+            'success': True,
+            'message': 'Section created successfully',
+            'section': {
+                'id': section.id,
+                'section_type': section.section_type,
+                'title': section.title,
+                'subtitle': section.subtitle
+            }
+        })
+        return add_cors_headers(response), 201
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error creating section: {str(e)}")
+        response = jsonify({'error': str(e)})
+        response.status_code = 500
+        return add_cors_headers(response)
+
+@api.route('/content/dynamic-sections/<int:section_id>', methods=['PUT'])
+@jwt_required()
+def update_dynamic_section(section_id):
+    try:
+        section = DynamicSection.query.get_or_404(section_id)
+        data = request.get_json()
+        
+        if 'title' in data:
+            section.title = data['title']
+        if 'subtitle' in data:
+            section.subtitle = data['subtitle']
+        if 'content' in data:
+            section.content = data['content']
+        if 'button_text' in data:
+            section.button_text = data['button_text']
+        if 'button_link' in data:
+            section.button_link = data['button_link']
+        if 'image_url' in data:
+            section.image_url = data['image_url']
+        if 'icon' in data:
+            section.icon = data['icon']
+        if 'order' in data:
+            section.order = data['order']
+        if 'is_active' in data:
+            section.is_active = data['is_active']
+        
+        section.updated_at = datetime.utcnow()
+        db.session.commit()
+        
+        response = jsonify({
+            'success': True,
+            'message': 'Section updated successfully',
+            'section': {
+                'id': section.id,
+                'section_type': section.section_type,
+                'title': section.title,
+                'updated_at': section.updated_at.isoformat()
+            }
+        })
+        return add_cors_headers(response)
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error updating section: {str(e)}")
+        response = jsonify({'error': str(e)})
+        response.status_code = 500
+        return add_cors_headers(response)
+
+@api.route('/content/dynamic-sections/<int:section_id>', methods=['DELETE'])
+@jwt_required()
+def delete_dynamic_section(section_id):
+    try:
+        section = DynamicSection.query.get(section_id)
+        if not section:
+            response = jsonify({'success': False, 'error': 'Section not found'})
+            response.status_code = 404
+            return add_cors_headers(response)
+        
+        db.session.delete(section)
+        db.session.commit()
+        
+        response = jsonify({'success': True, 'message': 'Section deleted successfully'})
+        return add_cors_headers(response)
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error deleting section: {str(e)}")
+        response = jsonify({'success': False, 'error': str(e)})
+        response.status_code = 500
+        return add_cors_headers(response)

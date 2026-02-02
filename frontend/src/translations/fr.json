@@ -1,0 +1,162 @@
+{
+  "header": {
+    "logoSubtitle": "Plateforme d'Intelligence Documentaire",
+    "features": "Fonctionnalités",
+    "platform": "Plateforme",
+    "demo": "Démo",
+    "vision": "Vision",
+    "presentation": "Présentation"
+  },
+  "hero": {
+    "tagline": "Intelligence Documentaire d'Entreprise",
+    "titlePart1": "Recherche Intelligente pour une",
+    "titlePart2": "Administration",
+    "titlePart3": "Moderne",
+    "description": "Plateforme avancée de gestion documentaire transformant les archives nationales camerounaises avec une recherche alimentée par l'IA, des flux de travail automatisés et une sécurité de niveau entreprise.",
+    "aiSearch": "Recherche avec IA",
+    "aiSearchDesc": "Découverte intelligente de documents",
+    "securePlatform": "Plateforme Sécurisée",
+    "securePlatformDesc": "Sécurité de niveau entreprise",
+    "platformTitle": "Plateforme SearchEngine",
+    "platformSubtitle": "Gestion documentaire professionnelle"
+  },
+  "features": {
+    "title": "Fonctionnalités de Niveau Entreprise",
+    "subtitle": "Solution complète de gestion documentaire conçue pour les besoins de l'administration moderne",
+    "aiSearch": "Recherche avec IA",
+    "aiSearchDesc": "Recherche en texte intégral intelligente sur tous les types de documents avec technologie OCR intégrée",
+    "bandwidthOptimized": "Optimisation de Bande Passante",
+    "bandwidthOptimizedDesc": "Segmentation intelligente qui ne livre que les pages pertinentes, réduisant considérablement le transfert de données",
+    "workflowAutomation": "Automatisation des Flux de Travail",
+    "workflowAutomationDesc": "Moteur BPM personnalisable pour les processus de validation et d'approbation de documents",
+    "enterpriseSecurity": "Sécurité d'Entreprise",
+    "enterpriseSecurityDesc": "Authentification JWT, rôles hiérarchiques et permissions RBAC granulaires",
+    "documentManagement": "Gestion Documentaire",
+    "documentManagementDesc": "Gestion complète du cycle de vie des documents avec métadonnées et contrôle de version",
+    "teamCollaboration": "Collaboration d'Équipe",
+    "teamCollaborationDesc": "Collaboration transparente avec commentaires, signatures numériques et suivi en temps réel",
+    "loading": "Chargement des fonctionnalités..."
+  },
+  "platform": {
+    "tagline": "Interface Professionnelle",
+    "title": "Expérience de la Plateforme",
+    "subtitle": "Design propre et intuitif conçu pour une gestion documentaire efficace",
+    "loading": "Chargement de la plateforme...",
+    "welcome": {
+      "title": "Accueil & Authentification",
+      "description": "Interface de connexion professionnelle avec contrôles d'accès sécurisés et expérience utilisateur intuitive.",
+      "features": [
+        "Écran d'accueil propre et professionnel",
+        "Système d'authentification sécurisé",
+        "Contrôle d'accès basé sur les rôles",
+        "Conception d'interface conviviale"
+      ]
+    },
+    "search": {
+      "title": "Interface de Recherche Intelligente",
+      "description": "Fonctionnalité de recherche avancée avec découverte de documents alimentée par l'IA sur tous les formats.",
+      "features": [
+        "Recherche en texte intégral sur tous les types de documents",
+        "Technologie OCR intégrée",
+        "Optimisation intelligente de la bande passante",
+        "Résultats de recherche en temps réel"
+      ]
+    },
+    "dashboard": {
+      "title": "Tableau de Bord & Gestion",
+      "description": "Tableau de bord complet pour les flux de travail documentaires, le suivi des progrès et la collaboration d'équipe.",
+      "features": [
+        "Gestion des flux de travail documentaires",
+        "Surveillance des progrès en temps réel",
+        "Outils de collaboration d'équipe",
+        "Contrôles administratifs"
+      ]
+    }
+  },
+  "videoDemo": {
+    "tagline": "Démonstration de la Plateforme",
+    "title": "Voyez-le en Action",
+    "subtitle": "Regardez comment SearchEngine transforme la gestion documentaire avec des flux de travail intelligents",
+    "noVideoTitle": "Vidéo de Démonstration",
+    "noVideoMessage": "Ajoutez votre vidéo de démonstration pour présenter les fonctionnalités et l'expérience utilisateur de la plateforme",
+    "smartSearch": "Recherche Intelligente",
+    "smartSearchDesc": "Découverte de documents alimentée par l'IA",
+    "workflows": "Flux de Travail",
+    "workflowsDesc": "Processus automatisés",
+    "security": "Sécurité",
+    "securityDesc": "Protection de niveau entreprise",
+    "demoVideo": "Vidéo de Démonstration",
+    "adminUploadVideo": "Télécharger la vidéo dans le Panneau d'Administration",
+    "admin": "Administrateur: Téléchargez des vidéos de démonstration dans l'Éditeur de Contenu → Section Vidéo"
+  },
+  "future": {
+    "title": "L'Avenir est Radieux",
+    "subtitle": "Fonctionnalités passionnantes à venir pour rendre SearchEngine encore plus puissant",
+    "semanticSearch": "Recherche Sémantique avec IA",
+    "semanticSearchDesc": "Au-delà de la correspondance de mots-clés avec compréhension contextuelle",
+    "semanticSearchContent": "Notre IA apprend du contexte des documents pour fournir des résultats de recherche plus précis",
+    "digitalSignatures": "Signatures Numériques & Certificats",
+    "digitalSignaturesDesc": "Authenticité légale pour les documents numériques",
+    "digitalSignaturesContent": "Ajoutez des signatures numériques et des certificats ayant force légale à vos documents",
+    "speechRecognition": "Recherche Vocale & Commandes",
+    "speechRecognitionDesc": "Accès et contrôle des documents mains libres",
+    "speechRecognitionContent": "Utilisez des commandes vocales pour rechercher et naviguer dans les documents",
+    "textToSpeech": "Conversion Texte-parole",
+    "textToSpeechDesc": "Écoutez des documents au lieu de les lire",
+    "textToSpeechContent": "Convertissez n'importe quel document en audio pour l'accessibilité et la commodité",
+    "annotations": "Annotations en Temps Réel",
+    "annotationsDesc": "Annotation et commentaires collaboratifs de documents",
+    "annotationsContent": "Ajoutez des commentaires, des surlignages et des annotations en temps réel avec les membres de l'équipe",
+    "nationalDeployment": "Déploiement National",
+    "nationalDeploymentDesc": "Réseau fédéré pour les administrations",
+    "nationalDeploymentContent": "Passez à l'échelle nationale avec une architecture fédérée",
+    "innovationTitle": "Innovation Continue",
+    "innovationMessage": "Nous nous engageons à faire évoluer SearchEngine avec des fonctionnalités de pointe qui répondent aux besoins changeants des administrations modernes",
+    "loading": "Chargement de la vision future...",
+    "visionFuture": "Vision Future"
+  },
+  "cta": {
+    "title": "Modernisation de l'Administration Camerounaise",
+    "description": "SearchEngine représente une contribution majeure à la transformation numérique, révolutionnant la gestion des archives documentaires nationales avec une technologie de pointe et de l'innovation.",
+    "secure": "Sécurité d'Entreprise",
+    "secureDesc": "Chiffrement militaire pour les documents sensibles",
+    "secureContent": "Vos données sont protégées avec le chiffrement AES-256 et des protocoles sécurisés",
+    "fast": "Extrêmement Rapide",
+    "fastDesc": "Résultats de recherche optimisés en millisecondes",
+    "fastContent": "Nos algorithmes optimisés fournissent des résultats plus rapidement que la recherche traditionnelle",
+    "teams": "Collaboration d'Équipe",
+    "teamsDesc": "Flux de travail transparent entre les départements",
+    "teamsContent": "Partagez, commentez et collaborez sur des documents en temps réel",
+    "footerMessage": "Transformer la gestion des archives nationales pour l'administration camerounaise",
+    "copyright": "© 2025 SearchEngine. Tous droits réservés"
+  },
+  "languageSwitcher": {
+    "en": "EN",
+    "fr": "FR"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "slide": "Diapositive",
+    "admin": "Administrateur",
+    "addContent": "Ajouter du contenu dans le Panneau d'Administration"
+  },
+  "chatbot": {
+    "title": "Assistant SearchEngine",
+    "welcome": "👋 Bonjour ! Je suis l'assistant SearchEngine. Posez-moi vos questions sur notre plateforme de gestion documentaire.",
+    "online": "En ligne",
+    "minimize": "Réduire",
+    "close": "Fermer",
+    "typeMessage": "Posez votre question...",
+    "send": "Envoyer",
+    "thinking": "Réflexion...",
+    "errorConnection": "Connexion impossible. Veuillez vérifier votre connexion internet.",
+    "errorTechnical": "Je suis désolé, je rencontre des difficultés techniques. Veuillez réessayer.",
+    "quickActions": {
+      "features": "Fonctionnalités",
+      "security": "Sécurité",
+      "support": "Support"
+    }
+  }
+}

@@ -1,0 +1,220 @@
+﻿// src/context/ContentContext.js - COMPLETE FIX
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import { contentAPI } from '../services/api';
+import { getUploadedImageUrl, getVideoUrl, getImageFallback } from '../utils/imageUtils';
+
+const ContentContext = createContext();
+
+export const useContent = () => {
+  const context = useContext(ContentContext);
+  if (!context) {
+    throw new Error('useContent must be used within a ContentProvider');
+  }
+  return context;
+};
+
+export const ContentProvider = ({ children }) => {
+  const [content, setContent] = useState({
+    // Sections
+    hero: {}, features: {}, platform: {}, video: {}, future: {}, cta: {},
+    welcome_auth: {}, intelligent_search: {}, dashboard_management: {},
+    advanced_features: {}, secure_reliable: {}, footer: {},
+    
+    // Lists
+    featuresList: [],
+    visionSections: [],
+    ctaSections: [],
+    platformSections: []
+  });
+  
+  const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [error, setError] = useState(null);
+  const [refreshCount, setRefreshCount] = useState(0);
+
+  const fetchContent = useCallback(async () => {
+    console.log('🔄 Starting content fetch...');
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Fetch ALL data in parallel
+      const [
+        sectionsResponse,
+        featuresResponse,
+        futureResponse,
+        ctaResponse,
+        platformResponse
+      ] = await Promise.all([
+        contentAPI.getAll().catch(err => {
+          console.warn('Failed to fetch sections:', err);
+          return { data: [] };
+        }),
+        contentAPI.getFeatures().catch(err => {
+          console.warn('Failed to fetch features:', err);
+          return { data: [] };
+        }),
+        contentAPI.getDynamicSections('future').catch(err => {
+          console.warn('Failed to fetch future sections:', err);
+          return { data: [] };
+        }),
+        contentAPI.getDynamicSections('cta').catch(err => {
+          console.warn('Failed to fetch CTA sections:', err);
+          return { data: [] };
+        }),
+        contentAPI.getDynamicSections('platform').catch(err => {
+          console.warn('Failed to fetch platform sections:', err);
+          return { data: [] };
+        })
+      ]);
+      
+      console.log('📊 Fetch results:', {
+        sections: sectionsResponse.data?.length || 0,
+        features: featuresResponse.data?.length || 0,
+        future: futureResponse.data?.length || 0,
+        cta: ctaResponse.data?.length || 0,
+        platform: platformResponse.data?.length || 0
+      });
+      
+      const newContent = {
+        hero: {}, features: {}, platform: {}, video: {}, future: {}, cta: {},
+        welcome_auth: {}, intelligent_search: {}, dashboard_management: {},
+        advanced_features: {}, secure_reliable: {}, footer: {},
+        featuresList: [],
+        visionSections: [],
+        ctaSections: [],
+        platformSections: []
+      };
+      
+      // Process regular sections
+      if (sectionsResponse.data && Array.isArray(sectionsResponse.data)) {
+        sectionsResponse.data.forEach(section => {
+          if (section && section.section_key) {
+            newContent[section.section_key] = {
+              title: section.title || '',
+              subtitle: section.subtitle || '',
+              content: section.content || '',
+              image_url: section.image_url ? getUploadedImageUrl(section.image_url) : getImageFallback(section.section_key),
+              video_url: section.video_url ? getVideoUrl(section.video_url) : null,
+              bullet_points: section.bullet_points || '[]'
+            };
+          }
+        });
+      }
+      
+      // Process features
+      if (featuresResponse.data && Array.isArray(featuresResponse.data)) {
+        newContent.featuresList = featuresResponse.data
+          .filter(f => f && (f.is_active === undefined || f.is_active === true))
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
+          .map(f => ({
+            id: f.id || f._id,
+            title: f.title || '',
+            description: f.description || '',
+            icon: f.icon || '✨',
+            order: f.order || 0,
+            is_active: f.is_active !== false
+          }));
+      }
+      
+      // Process future sections (vision)
+      if (futureResponse.data && Array.isArray(futureResponse.data)) {
+        newContent.visionSections = futureResponse.data
+          .filter(v => v && (v.is_active === undefined || v.is_active === true))
+          .sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
+          .map(v => ({
+            id: v.id || v._id,
+            title: v.title || '',
+            description: v.description || '',
+            content: v.content || '',
+            icon: v.icon || '✨',
+            image_url: v.image_url ? getUploadedImageUrl(v.image_url) : getImageFallback('future'),
+            video_url: v.video_url ? getVideoUrl(v.video_url) : null,
+            display_order: v.display_order || 0,
+            is_active: v.is_active !== false
+          }));
+      }
+      
+      // Process CTA sections
+      if (ctaResponse.data && Array.isArray(ctaResponse.data)) {
+        newContent.ctaSections = ctaResponse.data
+          .filter(c => c && (c.is_active === undefined || c.is_active === true))
+          .sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
+          .map(c => ({
+            id: c.id || c._id,
+            title: c.title || '',
+            description: c.description || '',
+            content: c.content || '',
+            icon: c.icon || '📢',
+            image_url: c.image_url ? getUploadedImageUrl(c.image_url) : getImageFallback('cta'),
+            video_url: c.video_url ? getVideoUrl(c.video_url) : null,
+            display_order: c.display_order || 0,
+            is_active: c.is_active !== false
+          }));
+      }
+      
+      // Process platform sections
+      if (platformResponse.data && Array.isArray(platformResponse.data)) {
+        newContent.platformSections = platformResponse.data
+          .filter(p => p && (p.is_active === undefined || p.is_active === true))
+          .sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
+          .map(p => ({
+            id: p.id || p._id,
+            title: p.title || '',
+            description: p.description || '',
+            content: p.content || '',
+            icon: p.icon || '🚀',
+            image_url: p.image_url ? getUploadedImageUrl(p.image_url) : getImageFallback('platform'),
+            video_url: p.video_url ? getVideoUrl(p.video_url) : null,
+            display_order: p.display_order || 0,
+            is_active: p.is_active !== false
+          }));
+      }
+      
+      console.log('✅ Content loaded:', {
+        sections: Object.keys(newContent).filter(k => !['featuresList', 'visionSections', 'ctaSections', 'platformSections'].includes(k)).length,
+        features: newContent.featuresList.length,
+        vision: newContent.visionSections.length,
+        cta: newContent.ctaSections.length,
+        platform: newContent.platformSections.length
+      });
+      
+      setContent(newContent);
+      setLastUpdated(new Date());
+      
+    } catch (err) {
+      console.error('❌ Error fetching content:', err);
+      setError('Failed to load content: ' + (err.message || 'Unknown error'));
+    } finally {
+      setLoading(false);
+    }
+  }, [refreshCount]);
+
+  useEffect(() => {
+    fetchContent();
+    
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchContent, 30000);
+    return () => clearInterval(interval);
+  }, [fetchContent]);
+
+  const refreshContent = () => {
+    console.log('🔄 Manual refresh requested');
+    setRefreshCount(prev => prev + 1);
+  };
+
+  const value = {
+    content,
+    loading,
+    error,
+    lastUpdated,
+    refreshContent,
+    fetchContent
+  };
+
+  return (
+    <ContentContext.Provider value={value}>
+      {children}
+    </ContentContext.Provider>
+  );
+};
