@@ -10,7 +10,7 @@ def create_database():
             host="localhost",
             port=5432,
             user="postgres",
-            password="postgres",
+            password="mkounga10",
             database="postgres"  # Connect to default database
         )
         conn.autocommit = True
@@ -29,7 +29,7 @@ def create_database():
             host="localhost",
             port=5432,
             user="postgres",
-            password="postgres",
+            password="mkounga10",
             database="search_presentation"
         )
         cursor = conn.cursor()

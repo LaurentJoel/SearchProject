@@ -22,6 +22,10 @@ def seed_fresh():
     with app.app_context():
         print("🌱 Seeding fresh database...")
         
+        # Create all tables first
+        db.create_all()
+        print("📋 Created database tables")
+        
         # Clean existing data first
         ContentSection.query.delete()
         print("🧹 Cleaned existing sections")

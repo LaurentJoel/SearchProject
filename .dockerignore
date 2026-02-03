@@ -1,0 +1,21 @@
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Documentation
+*.md
+
+# Local environments
+**/.env
+**/.env.local
+**/venv/
+**/node_modules/
+
+# Build artifacts
+**/build/
+**/__pycache__/
+**/*.pyc

@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local config
+.env
+*.local
+
+# Uploads (will be mounted as volume)
+uploads/
+
+# Git
+.git/
+.gitignore
+
+# Tests
+tests/
+*.test.py
+pytest.ini
+
+# Documentation
+*.md
+docs/

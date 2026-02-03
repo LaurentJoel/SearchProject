@@ -8,7 +8,7 @@ class Config:
     # Use the actual database name that exists
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
-        "postgresql+psycopg2://postgres:postgres@localhost:5432/search_presentation"  # Changed to search_presentation
+        "postgresql+psycopg://postgres:mkounga10@localhost:5432/search_presentation"  # Using psycopg3
     )
 
     JWT_SECRET_KEY = os.getenv(
