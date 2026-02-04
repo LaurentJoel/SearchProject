@@ -79,6 +79,25 @@ docker compose down -v
 
 ---
 
+## Database Seeding
+
+If you need to populate the database with initial/sample data, run these commands:
+
+```bash
+# Seed content sections and features (main data)
+docker exec searchengine-backend python seed_database.py
+
+# Seed dynamic sections (vision, CTA, platform sections)
+docker exec searchengine-backend python seed_dynamic_data.py
+
+# Verify that seeding was successful
+docker exec searchengine-backend python verify_seeding.py
+```
+
+💡 **Note**: The database is automatically initialized with basic data when the container starts. Use these commands only if you need to reset or add more sample data.
+
+---
+
 ## Troubleshooting
 
 ### "Port already in use"
