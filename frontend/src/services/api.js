@@ -92,11 +92,24 @@ api.interceptors.response.use(
       });
     }
     
+    // Handle authentication errors (401) - redirect to login
     if (error.response?.status === 401) {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('adminUser');
-      if (window.location.pathname.includes('/admin')) {
+      if (window.location.pathname.includes('/admin') && !window.location.pathname.includes('/admin/login')) {
         window.location.href = '/admin/login';
+      }
+    }
+    
+    // Handle 500 errors that might be JWT-related (expired token before backend fix)
+    if (error.response?.status === 500) {
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || '';
+      if (errorMsg.toLowerCase().includes('expired') || errorMsg.toLowerCase().includes('token') || errorMsg.toLowerCase().includes('signature')) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+        if (window.location.pathname.includes('/admin') && !window.location.pathname.includes('/admin/login')) {
+          window.location.href = '/admin/login';
+        }
       }
     }
     
@@ -107,11 +120,24 @@ api.interceptors.response.use(
 uploadApi.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Handle authentication errors (401) - redirect to login
     if (error.response?.status === 401) {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('adminUser');
-      if (window.location.pathname.includes('/admin')) {
+      if (window.location.pathname.includes('/admin') && !window.location.pathname.includes('/admin/login')) {
         window.location.href = '/admin/login';
+      }
+    }
+    
+    // Handle 500 errors that might be JWT-related
+    if (error.response?.status === 500) {
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || '';
+      if (errorMsg.toLowerCase().includes('expired') || errorMsg.toLowerCase().includes('token') || errorMsg.toLowerCase().includes('signature')) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+        if (window.location.pathname.includes('/admin') && !window.location.pathname.includes('/admin/login')) {
+          window.location.href = '/admin/login';
+        }
       }
     }
     
