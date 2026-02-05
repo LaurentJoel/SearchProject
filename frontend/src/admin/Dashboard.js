@@ -1,5 +1,6 @@
 ﻿// src/admin/Dashboard.js - FIXED (NO AUTO-REFRESH, NO INTERVALS)
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { 
     FileText, Edit, Eye, RefreshCw, Clock, Activity,
     Settings, AlertCircle, CheckCircle, XCircle, Loader2,
@@ -246,12 +247,12 @@ const Dashboard = () => {
                             <FileText className="h-6 w-6" />
                         </div>
                     </div>
-                    <a
-                        href="/admin/content"
+                    <Link
+                        to="/admin/content"
                         className="block text-center p-2 text-sm text-green-600 hover:text-green-700 font-medium"
                     >
                         View all sections →
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
@@ -311,9 +312,9 @@ const Dashboard = () => {
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {quickActions.map((action, index) => (
-                        <a
+                        <Link
                             key={index}
-                            href={action.path}
+                            to={action.path}
                             target={action.target || '_self'}
                             className={`p-4 border-2 border-dashed rounded-lg transition-all ${action.color} hover:shadow-sm`}
                         >
@@ -328,7 +329,7 @@ const Dashboard = () => {
                                     <p className="text-gray-600 text-sm mt-1">{action.description}</p>
                                 </div>
                             </div>
-                        </a>
+                        </Link>
                     ))}
                 </div>
             </div>

@@ -1,5 +1,6 @@
 ﻿// src/admin/CTASectionsEditor.js
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
     FileText, 
     Edit,
@@ -174,13 +175,13 @@ const CTASectionsEditor = () => {
                     <p className="text-gray-600 mt-1">Manage call-to-action sections</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <a
-                        href="/admin"
+                    <Link
+                        to="/admin"
                         className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         Back to Dashboard
-                    </a>
+                    </Link>
                 </div>
             </div>
 

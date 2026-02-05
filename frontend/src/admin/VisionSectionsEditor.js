@@ -1,5 +1,6 @@
 // src/components/admin/VisionSectionsEditor.jsx - WITHOUT CTA
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import { 
     FileText, 
     Edit,
@@ -210,13 +211,13 @@ const VisionSectionsEditor = () => {
                     <p className="text-gray-600 mt-1">Manage platform and future sections</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <a
-                        href="/admin/dashboard"
+                    <Link
+                        to="/admin"
                         className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         Back to Dashboard
-                    </a>
+                    </Link>
                 </div>
             </div>
 
@@ -548,12 +549,12 @@ const VisionSectionsEditor = () => {
                             </p>
                         </div>
                     </div>
-                    <a
-                        href="/admin/cta"
+                    <Link
+                        to="/admin/cta"
                         className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                     >
                         Go to CTA Editor
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

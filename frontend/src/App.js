@@ -1,5 +1,5 @@
 // src/App.js - FIXED
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -11,6 +11,8 @@ import CTA from './components/CTA';
 import Chatbot from './components/Chatbot';
 import { LanguageProvider } from './context/LanguageContext';
 import { ContentProvider } from './context/ContentContext';
+import { authAPI } from './services/api';
+import { clearAuth } from './services/auth';
 import './index.css';
 
 // Admin Components
@@ -23,10 +25,47 @@ const SectionBulletEditor = React.lazy(() => import('./admin/SectionBulletEditor
 const VisionSectionsEditor = React.lazy(() => import('./admin/VisionSectionsEditor'));
 const CTASectionsEditor = React.lazy(() => import('./admin/CTASectionsEditor'));
 
-// Protected Route Component
+// Protected Route Component - verifies token validity
 const ProtectedRoute = ({ children }) => {
+  const [isVerifying, setIsVerifying] = useState(true);
+  const [isValid, setIsValid] = useState(false);
   const token = localStorage.getItem('adminToken');
-  return token ? children : <Navigate to="/admin/login" />;
+
+  useEffect(() => {
+    const verifyToken = async () => {
+      if (!token) {
+        setIsVerifying(false);
+        setIsValid(false);
+        return;
+      }
+
+      try {
+        await authAPI.verify();
+        setIsValid(true);
+      } catch (error) {
+        console.log('Token expired or invalid, clearing auth...');
+        clearAuth();
+        setIsValid(false);
+      } finally {
+        setIsVerifying(false);
+      }
+    };
+
+    verifyToken();
+  }, [token]);
+
+  if (isVerifying) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-emerald-50 to-green-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
+          <p className="mt-4 text-emerald-600">Verifying session...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return isValid ? children : <Navigate to="/admin/login" />;
 };
 
 // Loading component
@@ -58,25 +97,8 @@ const LandingPage = () => {
 };
 
 function App() {
-  const isMounted = useRef(false);
-  
   useEffect(() => {
     console.log('🚀 App mounted at:', new Date().toLocaleTimeString());
-    isMounted.current = true;
-    
-    // Block beforeunload
-    const handleBeforeUnload = (e) => {
-      e.preventDefault();
-      e.returnValue = '';
-      return '';
-    };
-    
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    return () => {
-      isMounted.current = false;
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
   }, []);
   
   return (
