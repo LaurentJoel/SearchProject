@@ -1,8 +1,13 @@
-﻿// src/services/api.js - FIXED (Working with proxy)
+﻿// src/services/api.js - FIXED (Working with proxy, no page reloads)
 import axios from 'axios';
 
 // Use empty base URL - proxy will handle routing to backend
 const API_BASE_URL = '';
+
+// Custom event for auth failures - React Router will listen to this
+const dispatchAuthFailure = () => {
+  window.dispatchEvent(new CustomEvent('auth-failure'));
+};
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -92,12 +97,13 @@ api.interceptors.response.use(
       });
     }
     
-    // Handle authentication errors (401) - redirect to login
+    // Handle authentication errors (401) - dispatch event for React to handle
     if (error.response?.status === 401) {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('adminUser');
+      sessionStorage.removeItem('tokenVerifiedAt');
       if (window.location.pathname.includes('/admin') && !window.location.pathname.includes('/admin/login')) {
-        window.location.href = '/admin/login';
+        dispatchAuthFailure();
       }
     }
     
@@ -107,8 +113,9 @@ api.interceptors.response.use(
       if (errorMsg.toLowerCase().includes('expired') || errorMsg.toLowerCase().includes('token') || errorMsg.toLowerCase().includes('signature')) {
         localStorage.removeItem('adminToken');
         localStorage.removeItem('adminUser');
+        sessionStorage.removeItem('tokenVerifiedAt');
         if (window.location.pathname.includes('/admin') && !window.location.pathname.includes('/admin/login')) {
-          window.location.href = '/admin/login';
+          dispatchAuthFailure();
         }
       }
     }
@@ -120,12 +127,13 @@ api.interceptors.response.use(
 uploadApi.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle authentication errors (401) - redirect to login
+    // Handle authentication errors (401) - dispatch event for React to handle
     if (error.response?.status === 401) {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('adminUser');
+      sessionStorage.removeItem('tokenVerifiedAt');
       if (window.location.pathname.includes('/admin') && !window.location.pathname.includes('/admin/login')) {
-        window.location.href = '/admin/login';
+        dispatchAuthFailure();
       }
     }
     
@@ -135,8 +143,9 @@ uploadApi.interceptors.response.use(
       if (errorMsg.toLowerCase().includes('expired') || errorMsg.toLowerCase().includes('token') || errorMsg.toLowerCase().includes('signature')) {
         localStorage.removeItem('adminToken');
         localStorage.removeItem('adminUser');
+        sessionStorage.removeItem('tokenVerifiedAt');
         if (window.location.pathname.includes('/admin') && !window.location.pathname.includes('/admin/login')) {
-          window.location.href = '/admin/login';
+          dispatchAuthFailure();
         }
       }
     }

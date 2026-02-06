@@ -1,6 +1,6 @@
-// src/App.js - FIXED
+// src/App.js - FIXED (No page reloads)
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import VideoDemo from './components/Videodemo';
@@ -15,6 +15,23 @@ import { authAPI } from './services/api';
 import { clearAuth } from './services/auth';
 import './index.css';
 
+// Component to listen for auth failures and redirect without page reload
+const AuthHandler = () => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const handleAuthFailure = () => {
+      console.log('🔐 Auth failure detected, redirecting to login...');
+      navigate('/admin/login', { replace: true });
+    };
+    
+    window.addEventListener('auth-failure', handleAuthFailure);
+    return () => window.removeEventListener('auth-failure', handleAuthFailure);
+  }, [navigate]);
+  
+  return null;
+};
+
 // Admin Components
 const AdminLogin = React.lazy(() => import('./admin/AdminLogin'));
 const AdminLayout = React.lazy(() => import('./admin/AdminLayout'));
@@ -25,7 +42,10 @@ const SectionBulletEditor = React.lazy(() => import('./admin/SectionBulletEditor
 const VisionSectionsEditor = React.lazy(() => import('./admin/VisionSectionsEditor'));
 const CTASectionsEditor = React.lazy(() => import('./admin/CTASectionsEditor'));
 
-// Protected Route Component - verifies token validity
+// Protected Route Component - verifies token validity with caching
+const VERIFY_CACHE_KEY = 'tokenVerifiedAt';
+const VERIFY_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 const ProtectedRoute = ({ children }) => {
   const [isVerifying, setIsVerifying] = useState(true);
   const [isValid, setIsValid] = useState(false);
@@ -39,11 +59,26 @@ const ProtectedRoute = ({ children }) => {
         return;
       }
 
+      // Check if we recently verified the token (within cache duration)
+      const lastVerified = sessionStorage.getItem(VERIFY_CACHE_KEY);
+      if (lastVerified) {
+        const timeSinceVerify = Date.now() - parseInt(lastVerified, 10);
+        if (timeSinceVerify < VERIFY_CACHE_DURATION) {
+          // Token was recently verified, skip API call
+          setIsValid(true);
+          setIsVerifying(false);
+          return;
+        }
+      }
+
       try {
         await authAPI.verify();
+        // Cache the verification timestamp
+        sessionStorage.setItem(VERIFY_CACHE_KEY, Date.now().toString());
         setIsValid(true);
       } catch (error) {
         console.log('Token expired or invalid, clearing auth...');
+        sessionStorage.removeItem(VERIFY_CACHE_KEY);
         clearAuth();
         setIsValid(false);
       } finally {
@@ -105,6 +140,7 @@ function App() {
     <LanguageProvider>
       <ContentProvider>
         <Router>
+          <AuthHandler />
           <Routes>
             {/* Public Landing Page */}
             <Route path="/" element={<LandingPage />} />

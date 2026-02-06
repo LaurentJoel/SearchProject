@@ -97,10 +97,7 @@ const ContentEditor = () => {
       
       if (error.response?.status === 401) {
         setMessage('❌ Session expired. Please login again.');
-        setTimeout(() => {
-          localStorage.removeItem('adminToken');
-          window.location.href = '/admin/login';
-        }, 2000);
+        // Auth failure will be handled by the API interceptor
       }
     } finally {
       setSaving(false);
