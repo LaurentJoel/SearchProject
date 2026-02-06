@@ -44,14 +44,32 @@ const CTASectionsEditor = React.lazy(() => import('./admin/CTASectionsEditor'));
 
 // Protected Route Component - verifies token validity with caching
 const VERIFY_CACHE_KEY = 'tokenVerifiedAt';
-const VERIFY_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const VERIFY_CACHE_DURATION = 55 * 60 * 1000; // 55 minutes (just under 1hr JWT expiry)
+
+// Check cache synchronously to avoid spinner flash
+const isCacheValid = () => {
+  const token = localStorage.getItem('adminToken');
+  if (!token) return false;
+  
+  const lastVerified = sessionStorage.getItem(VERIFY_CACHE_KEY);
+  if (!lastVerified) return false;
+  
+  const timeSinceVerify = Date.now() - parseInt(lastVerified, 10);
+  return timeSinceVerify < VERIFY_CACHE_DURATION;
+};
 
 const ProtectedRoute = ({ children }) => {
-  const [isVerifying, setIsVerifying] = useState(true);
-  const [isValid, setIsValid] = useState(false);
+  // Initialize state based on cache - no spinner if cache is valid
   const token = localStorage.getItem('adminToken');
+  const cacheValid = isCacheValid();
+  
+  const [isVerifying, setIsVerifying] = useState(!cacheValid && !!token);
+  const [isValid, setIsValid] = useState(cacheValid);
 
   useEffect(() => {
+    // If cache was valid on mount, we're already good
+    if (cacheValid) return;
+    
     const verifyToken = async () => {
       if (!token) {
         setIsVerifying(false);
@@ -59,21 +77,8 @@ const ProtectedRoute = ({ children }) => {
         return;
       }
 
-      // Check if we recently verified the token (within cache duration)
-      const lastVerified = sessionStorage.getItem(VERIFY_CACHE_KEY);
-      if (lastVerified) {
-        const timeSinceVerify = Date.now() - parseInt(lastVerified, 10);
-        if (timeSinceVerify < VERIFY_CACHE_DURATION) {
-          // Token was recently verified, skip API call
-          setIsValid(true);
-          setIsVerifying(false);
-          return;
-        }
-      }
-
       try {
         await authAPI.verify();
-        // Cache the verification timestamp
         sessionStorage.setItem(VERIFY_CACHE_KEY, Date.now().toString());
         setIsValid(true);
       } catch (error) {
@@ -87,7 +92,7 @@ const ProtectedRoute = ({ children }) => {
     };
 
     verifyToken();
-  }, [token]);
+  }, [token, cacheValid]);
 
   if (isVerifying) {
     return (

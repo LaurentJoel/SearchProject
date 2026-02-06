@@ -175,11 +175,6 @@ const handleSave = async () => {
       window.refreshContentContext();
     }
     
-    // Method 5: Open frontend in new tab to see changes
-    setTimeout(() => {
-      window.open('/', '_blank');
-    }, 1000);
-    
     setTimeout(() => setMessage(''), 3000);
   } catch (error) {
     console.error('Save error:', error);
